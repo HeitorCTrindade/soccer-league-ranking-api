@@ -13,17 +13,19 @@ export default class LoginController {
         .status(400).json({ message: 'All fields must be filled' });
     }
 
-    if (!isValidEmail(email)  !) {
+    const response = await this.serviceLogin.login({ email, password });
+
+    if (!isValidEmail(email) || response.isError) {
       return res
-        .status(400).json({ message: '"email" must be a valid email' });
+        .status(401).json({ message: 'Incorrect email or password' });
     }
-    const response = await this.serviceLogin.login(body);
+
+    req.body.token = response.token;
     return next();
   };
 
   login: RequestHandler = async (req, res) => {
-    const { body } = req;
-    const response = await this.serviceLogin.login(body);
-    return res.status(200).json({ token: response.token });
+    const { token } = req.body;
+    return res.status(200).json({ token });
   };
 }

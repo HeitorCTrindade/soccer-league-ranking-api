@@ -15,4 +15,8 @@ export default class JWT {
   static verifyToken(token: string) {
     return jwt.verify(token, this.secret);
   }
+
+  static decodeToken(token: string) {
+    return jwt.decode(token);
+  }
 }
