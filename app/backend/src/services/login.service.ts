@@ -16,14 +16,17 @@ export default class LoginService {
     return { token, isError: false };
   }
 
-  public async validadeAuth(token: string) {
-    const payload = JWT.decodeToken(token);
-    const userLogin = await this.userModel.findOne({ where: { email } });
-    if (!userLogin || !bcrypt.compareSync(password, userLogin.password)) {
-      return { isError: true };
-    }
-    
-    return { token, isError: false };
+  public async authUser({ email }: UserLogin) {
+    // const { isError } = await this.login({ email, passwordLoginService.hashHandle(password) });
+
+    // if (isError) {
+    //   return { role: 'error' };
+    // }
+
+    const { role } = await this.userModel
+      .findOne({ where: { email } }) as { role: string };
+
+    return { role };
   }
 
   static hashHandle(password: string) {

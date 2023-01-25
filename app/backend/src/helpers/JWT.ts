@@ -12,11 +12,7 @@ export default class JWT {
     return jwt.sign({ ...payload }, this.secret, this.config);
   }
 
-  static verifyToken(token: string) {
-    return jwt.verify(token, this.secret);
-  }
-
   static decodeToken(token: string) {
-    return jwt.decode(token);
+    return jwt.verify(token, this.secret);
   }
 }

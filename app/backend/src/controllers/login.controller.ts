@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import LoginService from '../services/login.service';
 import isValidEmail from '../helpers/general';
+import JWT from '../helpers/JWT';
 
 export default class LoginController {
   constructor(private serviceLogin = new LoginService()) {}
@@ -22,6 +23,29 @@ export default class LoginController {
 
     req.body.token = response.token;
     return next();
+  };
+
+  validadeAuth: RequestHandler = async (req, res, next) => {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      return res
+        .status(400).json({ message: 'Token not found' });
+    }
+
+    const decodeToken = JWT.decodeToken(authorization);
+
+    req.body.roleUser = decodeToken;
+
+    next();
+  };
+
+  auth: RequestHandler = async (req, res) => {
+    const { roleUser } = req.body;
+
+    const { role } = await this.serviceLogin.authUser(roleUser);
+
+    return res.status(200).json({ role });
   };
 
   login: RequestHandler = async (req, res) => {
