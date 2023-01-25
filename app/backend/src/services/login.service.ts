@@ -7,12 +7,13 @@ export default class LoginService {
   constructor(private userModel = UsersModel) {}
 
   public async login({ email, password }: UserLogin) {
-    const encryptedPassword = LoginService.hashHandle(password);
+    // const encryptedPassword = LoginService.hashHandle(password);
     const userLogin = await this.userModel.findOne({ where: { email } });
     if (!userLogin || !bcrypt.compareSync(password, userLogin.password)) {
       return { isError: true };
     }
-    const token = JWT.createToken({ email, password: encryptedPassword });
+    const token = JWT.createToken({ id: userLogin.id, email });
+    console.log(token);
     return { token, isError: false };
   }
 

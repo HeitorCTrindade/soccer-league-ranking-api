@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { UserLogin } from '../interfaces/UserLogin';
+import { UserTokenData } from '../interfaces/UserLogin';
 
 export default class JWT {
   private static secret: jwt.Secret = process.env.JWT_SECRET || 'jwt_secret';
@@ -8,7 +8,7 @@ export default class JWT {
     algorithm: 'HS256',
   };
 
-  static createToken(payload: UserLogin) {
+  static createToken(payload: UserTokenData) {
     return jwt.sign({ ...payload }, this.secret, this.config);
   }
 
