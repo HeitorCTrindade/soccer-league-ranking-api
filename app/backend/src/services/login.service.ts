@@ -1,5 +1,5 @@
-import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
+import JWT from '../helpers/JWT';
 import UsersModel from '../database/models/Users';
 import { UserLogin } from '../interfaces/UserLogin';
 
@@ -12,7 +12,7 @@ export default class LoginService {
     if (!userLogin || !bcrypt.compareSync(password, userLogin.password)) {
       return { isError: true };
     }
-    jwt.
+    const token = JWT.createToken({ email, password: encryptedPassword });
     return { token, isError: false };
   }
 
