@@ -1,6 +1,7 @@
 import * as express from 'express';
 import LoginController from './controllers/login.controller';
 import TeamController from './controllers/team.controller';
+import MatchesController from './controllers/matches.controller';
 
 class App {
   public app: express.Express;
@@ -9,6 +10,7 @@ class App {
     this.app = express();
     const loginController = new LoginController();
     const teamController = new TeamController();
+    const matchesController = new MatchesController();
     this.config();
 
     // Não remover essa rota
@@ -17,6 +19,7 @@ class App {
     this.app.get('/login/validate', loginController.validadeAuth, loginController.auth);
     this.app.get('/teams', teamController.getAllTeams);
     this.app.get('/teams/:id', teamController.getTeamById);
+    this.app.get('/matches', matchesController.getAllMatches);
   }
 
   private config():void {

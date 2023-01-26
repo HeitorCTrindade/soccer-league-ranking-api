@@ -13,6 +13,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         field: 'home_team_id',
+        references: {
+          key: 'id',
+          model: 'teams',
+        },
       },
       homeTeamGoals: {
         allowNull: false,
@@ -23,6 +27,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         field: 'away_team_id',
+        references: {
+          key: 'id',
+          model: 'teams',
+        },
       },
       awayTeamGoals: {
         allowNull: false,
@@ -41,3 +49,4 @@ module.exports = {
     return queryInterface.dropTable('matches');
   },
 };
+
