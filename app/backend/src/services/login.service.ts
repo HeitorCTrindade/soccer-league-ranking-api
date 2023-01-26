@@ -13,7 +13,6 @@ export default class LoginService {
       return { isError: true };
     }
     const token = JWT.createToken({ id: userLogin.id, email });
-    console.log(token);
     return { token, isError: false };
   }
 
