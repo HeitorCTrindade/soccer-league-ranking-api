@@ -1,5 +1,5 @@
 import MatchesModel from '../database/models/Matches';
-// import TeamsModel from '../database/models/Teams';
+import TeamsModel from '../database/models/Teams';
 
 export default class serviceMatches {
   constructor(private matchesModel = MatchesModel) {}
@@ -7,8 +7,8 @@ export default class serviceMatches {
   public async getAllMatches() {
     const allTeams = await this.matchesModel.findAll({
       include: [
-        { model: Teams, as: 'teamName', attributes: { exclude: ['id'] } },
-        { model: Teams, as: 'teamName', attributes: { exclude: ['id'] } },
+        { model: TeamsModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
+        { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ] });
     console.log(allTeams);
     return allTeams;
