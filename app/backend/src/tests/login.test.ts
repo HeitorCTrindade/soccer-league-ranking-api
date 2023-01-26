@@ -4,9 +4,9 @@ import * as chai from 'chai';
 import * as bcrypt from 'bcryptjs';
 // @ts-ignore
 import chaiHttp = require('chai-http');
-import { user, token, userLogin } from './mocks/login.service.mock';
+import { user, token, userLogin } from './mocks/login.mock';
 
-import userModel from '../database/models/Users';
+import UserModel from '../database/models/Users';
 
 import { Response } from 'superagent';
 
@@ -23,7 +23,7 @@ describe('Tests Login Unit', () => {
   afterEach(sinon.restore);
 
   it('Login is done correctly', async () => {
-    sinon.stub(userModel, 'findOne').resolves(user as userModel) ;
+    sinon.stub(UserModel, 'findOne').resolves(user as UserModel) ;
     sinon.stub(bcrypt, 'compareSync').returns(true) ;
      
     chaiHttpResponse = await chai
@@ -52,7 +52,7 @@ describe('Tests Login Unit', () => {
 
   it('Login fails with invalid email', async () => {
          
-    sinon.stub(userModel, 'findOne').resolves(null);
+    sinon.stub(UserModel, 'findOne').resolves(null);
 
     chaiHttpResponse = await chai
        .request(app).post('/login').send({...userLogin, email: 'invalid@mail'});    
@@ -62,7 +62,7 @@ describe('Tests Login Unit', () => {
 
   it('Login fails with invalid password', async () => {
          
-    sinon.stub(userModel, 'findOne').resolves(user as userModel) ;
+    sinon.stub(UserModel, 'findOne').resolves(user as UserModel) ;
     sinon.stub(bcrypt, 'compareSync').returns(false);
 
     chaiHttpResponse = await chai
