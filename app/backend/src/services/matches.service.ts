@@ -45,4 +45,20 @@ export default class serviceMatches {
     });
     return nM;
   }
+
+  public async finishMatch(matchId: number) {
+    const nM = await this.matchesModel.update(
+      { inProgress: false },
+      { where: { id: matchId } },
+    );
+    return nM;
+  }
+
+  public async updateMatch(matchId: number, homeTeamGoals:number, awayTeamGoals:number) {
+    const nM = await this.matchesModel.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id: matchId } },
+    );
+    return nM;
+  }
 }

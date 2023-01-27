@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-import { INTEGER } from 'sequelize';
 import JWT from '../helpers/JWT';
 import MatchesService from '../services/matches.service';
 import TeamService from '../services/team.service';
@@ -34,29 +33,19 @@ export default class MactchesController {
 
     const newMatch = { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals };
 
-    console.log(newMatch);
-
     const isCreate = await this.matchesService.createNewMatch(newMatch);
     return res.status(201).json(isCreate);
   };
 
   validateNewMatch: RequestHandler = async (req, res, next) => {
     const { homeTeamId, awayTeamId } = req.body;
-    
-    console.log('hoT: -'+homeTeamId+'AwT: -'+awayTeamId);
-    
-    console.log(parseInt(homeTeamId, 10) === parseInt(awayTeamId, 10));
-
-    if (parseInt(homeTeamId, 10) === parseInt(awayTeamId, 10)) {
+    if (+homeTeamId === +awayTeamId) {
       return res
         .status(422).json({ message: 'It is not possible to create a match with two equal teams' });
     }
 
     const isHomeTeamRegistered = await this.teamService.getTeamById(+homeTeamId);
     const isAwayTeamRegistered = await this.teamService.getTeamById(+awayTeamId);
-
-    console.log(isHomeTeamRegistered);
-    console.log(isHomeTeamRegistered === null);
 
     if (isHomeTeamRegistered === null || isAwayTeamRegistered === null) {
       return res
@@ -78,10 +67,26 @@ export default class MactchesController {
 
     try {
       JWT.decodeToken(authorization);
-      // req.body.roleUser = decodeToken;
       next();
     } catch (error) {
       return res.status(401).json({ message: 'Token must be a valid token' });
     }
+  };
+
+  finishMatch: RequestHandler = async (req, res) => {
+    const { id } = req.params;
+
+    const isAltered = await this.matchesService.finishMatch(+id);
+    if (!isAltered) return res.status(200).json({ message: 'Error_X' });
+    return res.status(200).json({ message: 'Finished' });
+  };
+
+  updateMatch: RequestHandler = async (req, res) => {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    const isAltered = await this.matchesService.updateMatch(+id, +homeTeamGoals, +awayTeamGoals);
+    if (!isAltered) return res.status(200).json({ message: 'Error_X' });
+    return res.status(200).json({ message: isAltered });
   };
 }
