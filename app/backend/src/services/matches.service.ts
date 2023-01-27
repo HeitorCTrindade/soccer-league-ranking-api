@@ -1,4 +1,3 @@
-import { where } from 'sequelize';
 import MatchesModel from '../database/models/Matches';
 import TeamsModel from '../database/models/Teams';
 
@@ -11,7 +10,6 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ] });
-      console.log('---->: '+'getAllMatches');
     return allMatches;
   }
 
@@ -22,7 +20,6 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ],
       where: { inProgress: true } });
-    console.log('---->: '+'getAllMatchesInProgress');
     return matches;
   }
 
@@ -33,7 +30,6 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ],
       where: { inProgress: false } });
-    console.log('getAllClosedMatches');
     return matches;
   }
 }

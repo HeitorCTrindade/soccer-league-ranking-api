@@ -19,7 +19,7 @@ export default class MactchesController {
       return res.status(200).json(matches);
     }
 
-    const matches = await this.matchesService.getAllClosedMatches();
-    return res.status(200).json(matches);
+    const allMatches = await this.matchesService.getAllClosedMatches();
+    return res.status(200).json(allMatches);
   };
 }
