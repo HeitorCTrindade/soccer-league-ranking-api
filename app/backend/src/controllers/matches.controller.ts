@@ -42,6 +42,11 @@ export default class MactchesController {
 
   validateNewMatch: RequestHandler = async (req, res, next) => {
     const { homeTeamId, awayTeamId } = req.body;
+    
+    console.log('hoT: -'+homeTeamId+'AwT: -'+awayTeamId);
+    
+    console.log(parseInt(homeTeamId, 10) === parseInt(awayTeamId, 10));
+
     if (parseInt(homeTeamId, 10) === parseInt(awayTeamId, 10)) {
       return res
         .status(422).json({ message: 'It is not possible to create a match with two equal teams' });
@@ -51,8 +56,9 @@ export default class MactchesController {
     const isAwayTeamRegistered = await this.teamService.getTeamById(+awayTeamId);
 
     console.log(isHomeTeamRegistered);
+    console.log(isHomeTeamRegistered === null);
 
-    if (isHomeTeamRegistered === null || !isAwayTeamRegistered === null) {
+    if (isHomeTeamRegistered === null || isAwayTeamRegistered === null) {
       return res
         .status(404).json({ message: 'There is no team with such id!' });
     }
