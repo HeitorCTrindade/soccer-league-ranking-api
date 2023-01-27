@@ -7,12 +7,14 @@ export default class MactchesController {
   getAllMatches: RequestHandler = async (req, res) => {
     const { inProgress } = req.query;
 
-    if (!inProgress) {
+    if (inProgress === undefined) {
       const matches = await this.matchesService.getAllMatches();
       return res.status(200).json(matches);
     }
 
-    if (inProgress) {
+    const isInProgress:boolean = JSON.parse(inProgress as string);
+
+    if (isInProgress === true) {
       const matches = await this.matchesService.getAllMatchesInProgress();
       return res.status(200).json(matches);
     }

@@ -11,7 +11,7 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'homeTeam', attributes: { exclude: ['id'] } },
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ] });
-    console.log(allMatches);
+      console.log('---->: '+'getAllMatches');
     return allMatches;
   }
 
@@ -22,7 +22,7 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ],
       where: { inProgress: true } });
-    console.log(matches);
+    console.log('---->: '+'getAllMatchesInProgress');
     return matches;
   }
 
@@ -33,7 +33,7 @@ export default class serviceMatches {
         { model: TeamsModel, as: 'awayTeam', attributes: { exclude: ['id'] } },
       ],
       where: { inProgress: false } });
-    console.log(matches);
+    console.log('getAllClosedMatches');
     return matches;
   }
 }
