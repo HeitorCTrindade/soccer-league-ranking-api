@@ -106,19 +106,19 @@ export default class Leaderboard {
     });
   }
 
-  public async getLeaderboardPlayingAtHome() {
-    await this.leaderboardUpdate();
-    return this.teamRanking.map((teamRank) => {
-      const { id, ...formatedRank } = teamRank;
-      return formatedRank;
-    });
-  }
+  // public async getLeaderboardPlayingAtHome() {
+  //   await this.leaderboardUpdate();
+  //   return this.teamRanking.map((teamRank) => {
+  //     const { id, ...formatedRank } = teamRank;
+  //     return formatedRank;
+  //   });
+  // }
 
-  public async getLeaderboardPlayingAtAway() {
-    await this.leaderboardUpdate();
-    return this.teamRanking.map((teamRank) => {
-      const { id, ...formatedRank } = teamRank;
-      return formatedRank;
-    });
-  }
+  // public async getLeaderboardPlayingAtAway() {
+  //   await this.leaderboardUpdate();
+  //   return this.teamRanking.map((teamRank) => {
+  //     const { id, ...formatedRank } = teamRank;
+  //     return formatedRank;
+  //   });
+  // }
 }

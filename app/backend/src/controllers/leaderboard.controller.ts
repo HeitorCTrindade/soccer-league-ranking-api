@@ -10,15 +10,15 @@ export default class LeaderboardController {
     return res.status(200).json(leaderboard);
   };
 
-  getLeaderboardPlayingAtHome: RequestHandler = async (_req, res) => {
-    const leaderboard = await this.leaderboardService.getLeaderboardPlayingAtHome();
-    console.log(leaderboard);
-    return res.status(200).json(leaderboard);
-  };
+  // getLeaderboardPlayingAtHome: RequestHandler = async (_req, res) => {
+  //   const leaderboard = await this.leaderboardService.getLeaderboardPlayingAtHome();
+  //   console.log(leaderboard);
+  //   return res.status(200).json(leaderboard);
+  // };
 
-  getLeaderboardPlayingAtAway: RequestHandler = async (_req, res) => {
-    const leaderboard = await this.leaderboardService.getLeaderboardPlayingAtAway();
-    console.log(leaderboard);
-    return res.status(200).json(leaderboard);
-  };
+  // getLeaderboardPlayingAtAway: RequestHandler = async (_req, res) => {
+  //   const leaderboard = await this.leaderboardService.getLeaderboardPlayingAtAway();
+  //   console.log(leaderboard);
+  //   return res.status(200).json(leaderboard);
+  // };
 }
