@@ -9,7 +9,7 @@ export default interface teamRankObj {
   goalsFavor: number;
   goalsOwn: number;
   goalsBalance: number;
-  efficiency: number;
+  efficiency: string;
 }
 
 // [

@@ -7,9 +7,15 @@ export default class Leaderboard {
   private teamRanking :teamRankObj[] = [];
 
   constructor(private sM = new MatchesService(), private tS = new TeamService()) {
-    this.fillLeaderboard();
-    this.updateLeaderboardHome();
+    // this.leaderboardUpdate();
+  }
+
+  private async leaderboardUpdate() {
+    this.teamRanking = [];
+    await this.fillLeaderboard();
+    await this.updateLeaderboardHome();
     this.fillStats();
+    this.sortLeaderBoard();
   }
 
   public async fillLeaderboard() {
@@ -26,7 +32,7 @@ export default class Leaderboard {
         goalsFavor: 0,
         goalsOwn: 0,
         goalsBalance: 0,
-        efficiency: 0,
+        efficiency: '0.00',
       };
       this.teamRanking.push(newteamRankObj);
     });
@@ -40,14 +46,14 @@ export default class Leaderboard {
       homeT.totalVictories += 1;
       awayT.totalLosses += 1;
     } else if (match.homeTeamGoals === match.awayTeamGoals) {
-      awayT.totalPoints += 3;
-      awayT.totalVictories += 1;
-      homeT.totalLosses += 1;
-    } else {
       homeT.totalPoints += 1;
       awayT.totalPoints += 1;
       homeT.totalDraws += 1;
       awayT.totalDraws += 1;
+    } else {
+      awayT.totalPoints += 3;
+      awayT.totalVictories += 1;
+      homeT.totalLosses += 1;
     }
   }
 
@@ -66,19 +72,50 @@ export default class Leaderboard {
     });
   }
 
-  public async fillStats() {
+  public fillStats() {
     this.teamRanking.forEach((team) => {
       const t = team;
-      t.efficiency = parseFloat(((team.totalPoints / (team.totalGames * 3)) * 100).toFixed(2));
+      t.efficiency = ((team.totalPoints / (team.totalGames * 3)) * 100).toFixed(2);
       t.goalsBalance = team.goalsFavor - team.goalsOwn;
     });
   }
 
   private sortLeaderBoard() {
-    
+    this.teamRanking.sort((a, b) => {
+      if (a.totalPoints === b.totalPoints) {
+        if (a.totalVictories === b.totalVictories) {
+          if (a.goalsBalance === b.goalsBalance) {
+            if (a.goalsFavor === b.goalsFavor) {
+              return a.goalsOwn - b.goalsOwn;
+            }
+            return b.goalsFavor - a.goalsFavor;
+          }
+          return b.goalsBalance - a.goalsBalance;
+        }
+        return b.totalVictories - a.totalVictories;
+      }
+      return a.totalPoints < b.totalPoints ? 1 : -1;
+    });
   }
 
-  public getLeaderboard() {
+  public async getLeaderboard() {
+    await this.leaderboardUpdate();
+    return this.teamRanking.map((teamRank) => {
+      const { id, ...formatedRank } = teamRank;
+      return formatedRank;
+    });
+  }
+
+  public async getLeaderboardPlayingAtHome() {
+    await this.leaderboardUpdate();
+    return this.teamRanking.map((teamRank) => {
+      const { id, ...formatedRank } = teamRank;
+      return formatedRank;
+    });
+  }
+
+  public async getLeaderboardPlayingAtAway() {
+    await this.leaderboardUpdate();
     return this.teamRanking.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
       return formatedRank;
