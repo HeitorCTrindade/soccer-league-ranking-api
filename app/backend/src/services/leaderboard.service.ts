@@ -28,7 +28,6 @@ export default class Leaderboard {
   }
 
   private async leaderboardUpdate() {
-    this.teamRanking = [];
     await this.fillLeaderboard();
     await this.updateLeaderboardHomeAway(HOME);
     await this.updateLeaderboardHomeAway(AWAY);
@@ -36,8 +35,7 @@ export default class Leaderboard {
     this.sortLeaderBoard();
   }
 
-  private async leaderboardUpdateAwayHome(isHomeTeam: boolean) {
-    this.teamRanking = [];
+  private async leaderboardUpdateHomeAway(isHomeTeam: boolean) {
     await this.fillLeaderboard();
     await this.updateLeaderboardHomeAway(isHomeTeam);
     this.fillStats();
@@ -134,6 +132,7 @@ export default class Leaderboard {
   }
 
   public async getLeaderboard() {
+    this.teamRanking = [];
     await this.leaderboardUpdate();
     return this.teamRanking.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
@@ -142,7 +141,8 @@ export default class Leaderboard {
   }
 
   public async getLeaderboardPlayingAtHome() {
-    await this.leaderboardUpdateAwayHome(HOME);
+    this.teamRanking = [];
+    await this.leaderboardUpdateHomeAway(HOME);
     return this.teamRanking.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
       return formatedRank;
@@ -150,10 +150,48 @@ export default class Leaderboard {
   }
 
   public async getLeaderboardPlayingAtAway() {
-    await this.leaderboardUpdateAwayHome(AWAY);
+    this.teamRanking = [];
+    await this.leaderboardUpdateHomeAway(AWAY);
     return this.teamRanking.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
       return formatedRank;
     });
   }
 }
+
+// public async getLeaderboard() {
+//   await this.leaderboardUpdate();
+
+//   const retorno = this.teamRanking.map((teamRank) => {
+//     const { id, ...formatedRank } = teamRank;
+//     return formatedRank;
+//   });
+
+//   console.log("\n"+JSON.stringify(retorno));
+
+//   return retorno;
+// }
+
+// public async getLeaderboardPlayingAtHome() {
+//   await this.leaderboardUpdateHomeAway(HOME);
+//   const retorno = this.teamRanking.map((teamRank) => {
+//     const { id, ...formatedRank } = teamRank;
+//     return formatedRank;
+//   });
+
+//   console.log("\n"+JSON.stringify(retorno));
+
+//   return retorno;
+// }
+
+// public async getLeaderboardPlayingAtAway() {
+//   await this.leaderboardUpdateHomeAway(AWAY);
+//   const retorno = this.teamRanking.map((teamRank) => {
+//     const { id, ...formatedRank } = teamRank;
+//     return formatedRank;
+//   });
+
+//   console.log("\n"+JSON.stringify(retorno));
+
+//   return retorno;
+// }
