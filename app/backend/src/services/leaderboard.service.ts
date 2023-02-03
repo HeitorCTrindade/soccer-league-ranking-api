@@ -30,8 +30,9 @@ export default class Leaderboard {
 
   private async leaderboardUpdate() {
     await this.fillLeaderboard();
-    await this.updateLeaderboardHomeAway(HOME);
-    await this.updateLeaderboardHomeAway(AWAY);
+    // await this.updateLeaderboardHomeAway(HOME);
+    // await this.updateLeaderboardHomeAway(AWAY);
+    await this.updateLeaderboard();
     this.fillStats();
     this.sortLeaderBoard();
   }
@@ -82,24 +83,24 @@ export default class Leaderboard {
     }
   }
 
-  // public async updateLeaderboard() {
-  //   const closedMatches = await this.sM.getAllClosedMatches();
-  //   // console.log('EROO!!! ---'
-  //   // +closedMatches);
-  //   closedMatches.forEach((match) => {
-  //     const hT = this.teamRanking.find((team) => team.id === match.homeTeamId) as teamRankObj;
-  //     const aT = this.teamRanking.find((team) => team.id === match.awayTeamId) as teamRankObj;
-  //     // console.log('L Away at.totalGames: '+hT.totalGames);
-  //     // console.log('L Away at.totalGames: '+aT.totalGames);
-  //     hT.totalGames += 1;
-  //     aT.totalGames += 1;
-  //     hT.goalsFavor += match.homeTeamGoals;
-  //     hT.goalsOwn += match.awayTeamGoals;
-  //     aT.goalsFavor += match.awayTeamGoals;
-  //     aT.goalsOwn += match.homeTeamGoals;
-  //     Leaderboard.whoWinOrDraw(match, hT, aT);
-  //   });
-  // }
+  public async updateLeaderboard() {
+    const closedMatches = await this.sM.getAllClosedMatches();
+    // console.log('EROO!!! ---'
+    // +closedMatches);
+    closedMatches.forEach((match) => {
+      const hT = this.teamRanking.find((team) => team.id === +match.homeTeamId) as teamRankObj;
+      const aT = this.teamRanking.find((team) => team.id === +match.awayTeamId) as teamRankObj;
+      // console.log('L Away at.totalGames: '+hT.totalGames);
+      // console.log('L Away at.totalGames: '+aT.totalGames);
+      hT.totalGames += 1;
+      aT.totalGames += 1;
+      hT.goalsFavor += match.homeTeamGoals;
+      hT.goalsOwn += match.awayTeamGoals;
+      aT.goalsFavor += match.awayTeamGoals;
+      aT.goalsOwn += match.homeTeamGoals;
+      Leaderboard.whoWinOrDraw(match, hT, aT);
+    });
+  }
 
   public async updateLeaderboardHomeAway(isHomeTeam: boolean) {
     const closedMatches = await this.sM.getAllClosedMatches();
@@ -107,10 +108,6 @@ export default class Leaderboard {
       const teamToUpdatedStatus = isHomeTeam
         ? this.teamRanking.find((t) => t.id === match.homeTeamId) as teamRankObj
         : this.teamRanking.find((t) => t.id === match.awayTeamId) as teamRankObj;
-      if (!teamToUpdatedStatus) {
-        console.log('entrou');
-        return false;
-      }
       teamToUpdatedStatus.totalGames += 1;
       teamToUpdatedStatus.goalsFavor += isHomeTeam ? match.homeTeamGoals : match.awayTeamGoals;
       teamToUpdatedStatus.goalsOwn += isHomeTeam ? match.awayTeamGoals : match.homeTeamGoals;
@@ -201,3 +198,18 @@ export default class Leaderboard {
 
 //   return retorno;
 // }
+
+// public async updateLeaderboardHomeAway(isHomeTeam: boolean) {
+//   const closedMatches = await this.sM.getAllClosedMatches();
+//   closedMatches.forEach((match) => {
+//     const teamToUpdatedStatus = isHomeTeam
+//       ? this.teamRanking.find((t) => {
+//         console.log("["+t.id+"]-");
+//         console.log("["+match.homeTeamId+"]");
+//         return t.id === match.awayTeamId;
+//       }) as teamRankObj
+//       : this.teamRanking.find((t) => {
+//         console.log("["+t.id+"]-");
+//         console.log("["+match.awayTeamId+"]");
+//         return t.id === match.awayTeamId;
+//       }) as teamRankObj;
