@@ -24,6 +24,7 @@ export default class Leaderboard {
   private teamRanking :teamRankObj[] = [];
 
   constructor(private sM = new MatchesService(), private tS = new TeamService()) {
+    this.teamRanking = [];
     this.leaderboardUpdate();
   }
 
@@ -103,13 +104,18 @@ export default class Leaderboard {
   public async updateLeaderboardHomeAway(isHomeTeam: boolean) {
     const closedMatches = await this.sM.getAllClosedMatches();
     closedMatches.forEach((match) => {
-      const team = isHomeTeam
+      const teamToUpdatedStatus = isHomeTeam
         ? this.teamRanking.find((t) => t.id === match.homeTeamId) as teamRankObj
         : this.teamRanking.find((t) => t.id === match.awayTeamId) as teamRankObj;
-      team.totalGames += 1;
-      team.goalsFavor += isHomeTeam ? match.homeTeamGoals : match.awayTeamGoals;
-      team.goalsOwn += isHomeTeam ? match.awayTeamGoals : match.homeTeamGoals;
-      Leaderboard.whoWinOrDraw(match, isHomeTeam ? team : undefined, isHomeTeam ? undefined : team);
+      if (!teamToUpdatedStatus) {
+        console.log('entrou');
+        return false;
+      }
+      teamToUpdatedStatus.totalGames += 1;
+      teamToUpdatedStatus.goalsFavor += isHomeTeam ? match.homeTeamGoals : match.awayTeamGoals;
+      teamToUpdatedStatus.goalsOwn += isHomeTeam ? match.awayTeamGoals : match.homeTeamGoals;
+      Leaderboard.whoWinOrDraw(match, isHomeTeam
+        ? teamToUpdatedStatus : undefined, isHomeTeam ? undefined : teamToUpdatedStatus);
     });
   }
 
