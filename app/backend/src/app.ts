@@ -6,7 +6,6 @@ import LeaderboardController from './controllers/leaderboard.controller';
 
 class App {
   public app: express.Express;
-
   constructor() {
     this.app = express();
     const loginController = new LoginController();

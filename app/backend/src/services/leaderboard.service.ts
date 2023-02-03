@@ -3,6 +3,20 @@ import MatchesService from './matches.service';
 import MatchesModel from '../database/models/Matches';
 import TeamService from './team.service';
 
+const df:teamRankObj = {
+  id: 999,
+  name: 'XABLAU',
+  totalPoints: 0,
+  totalGames: 0,
+  totalVictories: 0,
+  totalDraws: 0,
+  totalLosses: 0,
+  goalsFavor: 0,
+  goalsOwn: 0,
+  goalsBalance: 0,
+  efficiency: '0.00',
+};
+
 export default class Leaderboard {
   private teamRanking :teamRankObj[] = [];
 
@@ -13,7 +27,23 @@ export default class Leaderboard {
   private async leaderboardUpdate() {
     this.teamRanking = [];
     await this.fillLeaderboard();
+    await this.updateLeaderboard();
+    this.fillStats();
+    this.sortLeaderBoard();
+  }
+
+  private async leaderboardUpdateHome() {
+    this.teamRanking = [];
+    await this.fillLeaderboard();
     await this.updateLeaderboardHome();
+    this.fillStats();
+    this.sortLeaderBoard();
+  }
+
+  private async leaderboardUpdateAway() {
+    this.teamRanking = [];
+    await this.fillLeaderboard();
+    await this.updateLeaderboardAway();
     this.fillStats();
     this.sortLeaderBoard();
   }
@@ -38,7 +68,7 @@ export default class Leaderboard {
     });
   }
 
-  private static whoWinOrDraw(match: MatchesModel, hT: teamRankObj, aT: teamRankObj) {
+  private static whoWinOrDraw(match: MatchesModel, hT: teamRankObj = df, aT: teamRankObj = df) {
     const homeT = hT;
     const awayT = aT;
     if (match.homeTeamGoals > match.awayTeamGoals) {
@@ -57,11 +87,16 @@ export default class Leaderboard {
     }
   }
 
-  public async updateLeaderboardHome() {
+  public async updateLeaderboard() {
     const closedMatches = await this.sM.getAllClosedMatches();
+    // console.log('EROO!!! ---'
+    // +closedMatches);
+
     closedMatches.forEach((match) => {
       const hT = this.teamRanking.find((team) => team.id === match.homeTeamId) as teamRankObj;
       const aT = this.teamRanking.find((team) => team.id === match.awayTeamId) as teamRankObj;
+      // console.log('ht: '+hT);
+      // console.log('at: '+aT);
       hT.totalGames += 1;
       aT.totalGames += 1;
       hT.goalsFavor += match.homeTeamGoals;
@@ -69,6 +104,28 @@ export default class Leaderboard {
       aT.goalsFavor += match.awayTeamGoals;
       aT.goalsOwn += match.homeTeamGoals;
       Leaderboard.whoWinOrDraw(match, hT, aT);
+    });
+  }
+
+  public async updateLeaderboardHome() {
+    const closedMatches = await this.sM.getAllClosedMatches();
+    closedMatches.forEach((match) => {
+      const hT = this.teamRanking.find((team) => team.id === match.homeTeamId) as teamRankObj;
+      hT.totalGames += 1;
+      hT.goalsFavor += match.homeTeamGoals;
+      hT.goalsOwn += match.awayTeamGoals;
+      Leaderboard.whoWinOrDraw(match, hT);
+    });
+  }
+
+  public async updateLeaderboardAway() {
+    const closedMatches = await this.sM.getAllClosedMatches();
+    closedMatches.forEach((match) => {
+      const aT = this.teamRanking.find((team) => team.id === match.awayTeamId) as teamRankObj;
+      aT.totalGames += 1;
+      aT.goalsFavor += match.awayTeamGoals;
+      aT.goalsOwn += match.homeTeamGoals;
+      Leaderboard.whoWinOrDraw(match, aT);
     });
   }
 
@@ -107,20 +164,20 @@ export default class Leaderboard {
   }
 
   public async getLeaderboardPlayingAtHome() {
-    // await this.leaderboardUpdate();
-    // return this.teamRanking.map((teamRank) => {
-    //   const { id, ...formatedRank } = teamRank;
-    //   return formatedRank;
-    // });
+    await this.leaderboardUpdateHome();
+    return this.teamRanking.map((teamRank) => {
+      const { id, ...formatedRank } = teamRank;
+      return formatedRank;
+    });
     return this.teamRanking;
   }
 
   public async getLeaderboardPlayingAtAway() {
-    // await this.leaderboardUpdate();
-    // return this.teamRanking.map((teamRank) => {
-    //   const { id, ...formatedRank } = teamRank;
-    //   return formatedRank;
-    // });
+    await this.leaderboardUpdateAway();
+    return this.teamRanking.map((teamRank) => {
+      const { id, ...formatedRank } = teamRank;
+      return formatedRank;
+    });
     return this.teamRanking;
   }
 }
