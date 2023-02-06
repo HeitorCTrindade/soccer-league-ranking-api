@@ -23,10 +23,7 @@ const AWAY = false;
 export default class Leaderboard {
   private teamRanking :teamRankObj[] = [];
 
-  constructor(private sM = new MatchesService(), private tS = new TeamService()) {
-    this.teamRanking = [];
-    // this.leaderboardUpdate();
-  }
+  constructor(private sM = new MatchesService(), private tS = new TeamService()) {}
 
   private async leaderboardUpdate() {
     // await this.updateLeaderboardHomeAway(HOME);
