@@ -22,9 +22,9 @@ class App {
     this.app.patch('/matches/:id/finish', mc.finishMatch);
     this.app.patch('/matches/:id', mc.updateMatch);
     this.app.post('/matches', mc.validateToken, mc.validateNewMatch, mc.createNewMatch);
-    this.app.get('/leaderboard', leaderBoardController.getLeaderboard);
     this.app.get('/leaderboard/home', leaderBoardController.getLeaderboardPlayingAtHome);
     this.app.get('/leaderboard/away', leaderBoardController.getLeaderboardPlayingAtAway);
+    this.app.get('/leaderboard', leaderBoardController.getLeaderboard);
   }
 
   private config():void {

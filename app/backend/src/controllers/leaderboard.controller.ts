@@ -7,6 +7,7 @@ export default class LeaderboardController {
   getLeaderboard: RequestHandler = async (_req, res) => {
     const leaderboard = await this.leaderboardService.getLeaderboard();
     return res.status(200).json(leaderboard);
+    // return res.status(200).json({ lenght: leaderboard.length, leaderboard });
   };
 
   getLeaderboardPlayingAtHome: RequestHandler = async (_req, res) => {
