@@ -22,6 +22,7 @@ const AWAY = false;
 
 export default class Leaderboard {
   private teamRanking :teamRankObj[] = [];
+  private closedMatches :MatchesModel[] = [];
 
   constructor(private sM = new MatchesService(), private tS = new TeamService()) {}
 
@@ -99,11 +100,12 @@ export default class Leaderboard {
   public async updateLeaderboard() {
     const closedMatches = await this.sM.getAllClosedMatches();
     closedMatches.forEach((match) => {
-      const indexhT = this.teamRanking.findIndex((team) => team.id === +match.homeTeamId);
-      const indexaT = this.teamRanking.findIndex((team) => team.id === +match.awayTeamId);
+      // console.log('Match: \n', this.teamRanking);
+      const indexhT = this.teamRanking.findIndex((team) => +team.id === +match.homeTeamId);
+      const indexaT = this.teamRanking.findIndex((team) => +team.id === +match.awayTeamId);
       // POR ALGUM MOTIVO TEAM VEM COMO INDEFINido nA BUSCA.
       if (!this.teamRanking[indexhT] || !this.teamRanking[indexaT]) {
-        console.log('whareverFull');
+        console.log('Undefined - ', indexhT, indexaT);
       } else {
         this.teamRanking[indexhT].totalGames += 1;
         this.teamRanking[indexaT].totalGames += 1;
