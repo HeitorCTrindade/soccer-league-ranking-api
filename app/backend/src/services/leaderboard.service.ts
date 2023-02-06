@@ -4,7 +4,7 @@ import MatchesModel from '../database/models/Matches';
 import TeamService from './team.service';
 
 const df:teamRankObj = {
-  id: 999,
+  id: 998,
   name: 'XABLAU',
   totalPoints: 0,
   totalGames: 0,
