@@ -25,7 +25,7 @@ export default class Leaderboard {
 
   constructor(private sM = new MatchesService(), private tS = new TeamService()) {
     this.teamRanking = [];
-    this.leaderboardUpdate();
+    // this.leaderboardUpdate();
   }
 
   private async leaderboardUpdate() {
@@ -85,19 +85,22 @@ export default class Leaderboard {
 
   public async updateLeaderboard() {
     const closedMatches = await this.sM.getAllClosedMatches();
-    // console.log('EROO!!! ---'
-    // +closedMatches);
+    console.log(JSON.stringify(closedMatches));
     closedMatches.forEach((match) => {
       const hT = this.teamRanking.find((team) => team.id === +match.homeTeamId) as teamRankObj;
       const aT = this.teamRanking.find((team) => team.id === +match.awayTeamId) as teamRankObj;
       // POR ALGUM MOTIVO TEAM VEM COMO INDEFINO DA BUSCA.
-      hT.totalGames += 1;
-      aT.totalGames += 1;
-      hT.goalsFavor += match.homeTeamGoals;
-      hT.goalsOwn += match.awayTeamGoals;
-      aT.goalsFavor += match.awayTeamGoals;
-      aT.goalsOwn += match.homeTeamGoals;
-      Leaderboard.whoWinOrDraw(match, hT, aT);
+      if (!hT || !aT) {
+        console.log(hT);
+      } else {
+        hT.totalGames += 1;
+        aT.totalGames += 1;
+        hT.goalsFavor += match.homeTeamGoals;
+        hT.goalsFavor += match.awayTeamGoals;
+        aT.goalsFavor += match.awayTeamGoals;
+        aT.goalsOwn += match.homeTeamGoals;
+        Leaderboard.whoWinOrDraw(match, hT, aT);
+      }
     });
   }
 
