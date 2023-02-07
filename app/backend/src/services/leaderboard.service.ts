@@ -27,9 +27,11 @@ export default class Leaderboard {
   constructor(private sM = new MatchesService(), private tS = new TeamService()) {}
 
   private async leaderboardUpdate() {
-    // await this.updateLeaderboardHomeAway(HOME);
-    // await this.updateLeaderboardHomeAway(AWAY);
-    await this.updateLeaderboard();
+    await this.updateLeaderboardHomeAway(HOME);
+    await this.updateLeaderboardHomeAway(AWAY);
+    // await this.updateLeaderboard();
+    const filteredBug = this.teamRanking.filter((teamRank) => teamRank.totalPoints !== 0);
+    this.teamRanking = filteredBug;
     this.fillStats();
     this.sortLeaderBoard();
   }
@@ -80,45 +82,43 @@ export default class Leaderboard {
     }
   }
 
-  private whoWinOrDraw2(match: MatchesModel, indexhT:number, indexaT: number) {
-    if (match.homeTeamGoals > match.awayTeamGoals) {
-      this.teamRanking[indexhT].totalPoints += 3;
-      this.teamRanking[indexhT].totalVictories += 1;
-      this.teamRanking[indexaT].totalLosses += 1;
-    } else if (match.homeTeamGoals === match.awayTeamGoals) {
-      this.teamRanking[indexhT].totalPoints += 1;
-      this.teamRanking[indexaT].totalPoints += 1;
-      this.teamRanking[indexhT].totalDraws += 1;
-      this.teamRanking[indexaT].totalDraws += 1;
-    } else {
-      this.teamRanking[indexaT].totalPoints += 3;
-      this.teamRanking[indexaT].totalVictories += 1;
-      this.teamRanking[indexhT].totalLosses += 1;
-    }
-  }
+  // private whoWinOrDraw2(match: MatchesModel, indexhT:number, indexaT: number) {
+  //   if (match.homeTeamGoals > match.awayTeamGoals) {
+  //     this.teamRanking[indexhT].totalPoints += 3;
+  //     this.teamRanking[indexhT].totalVictories += 1;
+  //     this.teamRanking[indexaT].totalLosses += 1;
+  //   } else if (match.homeTeamGoals === match.awayTeamGoals) {
+  //     this.teamRanking[indexhT].totalPoints += 1;
+  //     this.teamRanking[indexaT].totalPoints += 1;
+  //     this.teamRanking[indexhT].totalDraws += 1;
+  //     this.teamRanking[indexaT].totalDraws += 1;
+  //   } else {
+  //     this.teamRanking[indexaT].totalPoints += 3;
+  //     this.teamRanking[indexaT].totalVictories += 1;
+  //     this.teamRanking[indexhT].totalLosses += 1;
+  //   }
+  // }
 
-  public async updateLeaderboard() {
-    const closedMatches = await this.sM.getAllClosedMatches();
-    closedMatches.forEach((match) => {
-      // console.log('Match: \n', this.teamRanking);
-      const indexhT = this.teamRanking.findIndex((team) => +team.id === +match.homeTeamId);
-      const indexaT = this.teamRanking.findIndex((team) => +team.id === +match.awayTeamId);
-      // POR ALGUM MOTIVO TEAM VEM COMO INDEFINido nA BUSCA.
-      if (!this.teamRanking[indexhT] || !this.teamRanking[indexaT]) {
-        console.log('Undefined - ', indexhT, indexaT);
-      } else {
-        this.teamRanking[indexhT].totalGames += 1;
-        this.teamRanking[indexaT].totalGames += 1;
+  // public async updateLeaderboard() {
+  //   const closedMatches = await this.sM.getAllClosedMatches();
+  //   closedMatches.forEach((match) => {
+  //     // console.log('Match: \n', this.teamRanking);
+  //     const indexhT = this.teamRanking.findIndex((team) => +team.id === +match.homeTeamId);
+  //     const indexaT = this.teamRanking.findIndex((team) => +team.id === +match.awayTeamId);
+  //     // POR ALGUM MOTIVO TEAM VEM COMO INDEFINido nA BUSCA.
+  //     if (this.teamRanking[indexhT] || this.teamRanking[indexaT]) {
+  //       this.teamRanking[indexhT].totalGames += 1;
+  //       this.teamRanking[indexaT].totalGames += 1;
 
-        this.teamRanking[indexhT].goalsFavor += match.homeTeamGoals;
-        this.teamRanking[indexaT].goalsFavor += match.awayTeamGoals;
+  //       this.teamRanking[indexhT].goalsFavor += match.homeTeamGoals;
+  //       this.teamRanking[indexaT].goalsFavor += match.awayTeamGoals;
 
-        this.teamRanking[indexhT].goalsOwn += match.awayTeamGoals;
-        this.teamRanking[indexaT].goalsOwn += match.homeTeamGoals;
-        this.whoWinOrDraw2(match, indexhT, indexaT);
-      }
-    });
-  }
+  //       this.teamRanking[indexhT].goalsOwn += match.awayTeamGoals;
+  //       this.teamRanking[indexaT].goalsOwn += match.homeTeamGoals;
+  //       this.whoWinOrDraw2(match, indexhT, indexaT);
+  //     }
+  //   });
+  // }
 
   public async updateLeaderboardHomeAway(isHomeTeam: boolean) {
     const closedMatches = await this.sM.getAllClosedMatches();
@@ -127,9 +127,7 @@ export default class Leaderboard {
         ? this.teamRanking.find((t) => +t.id === +match.homeTeamId) as teamRankObj
         : this.teamRanking.find((t) => +t.id === +match.awayTeamId) as teamRankObj;
 
-      if (!teamToUpdatedStatus) {
-        console.log('whareverHomeAway');
-      } else {
+      if (teamToUpdatedStatus) {
         teamToUpdatedStatus.totalGames += 1;
         teamToUpdatedStatus.goalsFavor += isHomeTeam ? match.homeTeamGoals : match.awayTeamGoals;
         teamToUpdatedStatus.goalsOwn += isHomeTeam ? match.awayTeamGoals : match.homeTeamGoals;
@@ -161,8 +159,8 @@ export default class Leaderboard {
     this.teamRanking = [];
     await this.fillLeaderboard();
     await this.leaderboardUpdate();
-    const filteredBug = this.teamRanking.filter((teamRank) => teamRank.totalPoints !== 0);
-    return filteredBug.map((teamRank) => {
+    // const filteredBug = this.teamRanking.filter((teamRank) => teamRank.totalPoints !== 0);
+    return this.teamRanking.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
       return formatedRank;
     });
