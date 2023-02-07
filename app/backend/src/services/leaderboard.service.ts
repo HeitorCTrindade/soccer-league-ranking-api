@@ -161,7 +161,8 @@ export default class Leaderboard {
     this.teamRanking = [];
     await this.fillLeaderboard();
     await this.leaderboardUpdate();
-    return this.teamRanking.map((teamRank) => {
+    const filteredBug = this.teamRanking.filter((teamRank) => teamRank.totalPoints !== 0);
+    return filteredBug.map((teamRank) => {
       const { id, ...formatedRank } = teamRank;
       return formatedRank;
     });
