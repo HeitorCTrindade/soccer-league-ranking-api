@@ -1,4 +1,4 @@
-import teamRankObj from '../interfaces/TeamRanking';
+import teamRankObj from '../interfaces/ITeamRanking';
 import MatchesService from './matches.service';
 import MatchesModel from '../database/models/Matches';
 import TeamService from './team.service';

@@ -1,7 +1,7 @@
 import MatchesModel from '../database/models/Matches';
 import TeamsModel from '../database/models/Teams';
 
-import newMatchInterface from '../interfaces/Matchs';
+import IMaches from '../interfaces/IMatches';
 
 export default class serviceMatches {
   constructor(private matchesModel = MatchesModel) {}
@@ -35,7 +35,7 @@ export default class serviceMatches {
     return matches;
   }
 
-  public async createNewMatch(newMatch: newMatchInterface) {
+  public async createNewMatch(newMatch: IMaches) {
     const nM = await this.matchesModel.create({
       homeTeamId: +newMatch.homeTeamId,
       awayTeamId: +newMatch.awayTeamId,

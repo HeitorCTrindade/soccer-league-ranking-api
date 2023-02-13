@@ -1,4 +1,4 @@
-export default interface teamRankObj {
+export default interface ITeamRanking {
   id: number;
   name: string;
   totalPoints: number;

@@ -4,9 +4,9 @@ import db from '.';
 
 class Matches extends Model {
   declare id: number;
-  homeTeamId!: number;
+  declare homeTeamId: number;
   declare homeTeamGoals: number;
-  awayTeamId!: number;
+  declare awayTeamId: number;
   declare awayTeamGoals: number;
   declare inProgress: boolean;
 }

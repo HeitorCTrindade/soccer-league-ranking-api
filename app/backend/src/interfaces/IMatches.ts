@@ -1,4 +1,4 @@
-export default interface newMatchInterface {
+export default interface Imatches {
   homeTeamId: number;
   awayTeamId: number;
   homeTeamGoals: number;

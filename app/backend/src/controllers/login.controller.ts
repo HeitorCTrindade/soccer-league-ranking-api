@@ -1,55 +1,29 @@
-import { RequestHandler } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import LoginService from '../services/login.service';
-import isValidEmail from '../helpers/general';
-import JWT from '../helpers/JWT';
 
 export default class LoginController {
-  constructor(private serviceLogin = new LoginService()) {}
+  private req: Request;
+  private res: Response;
+  private next: NextFunction;
+  private service: LoginService;
 
-  validateLogin: RequestHandler = async (req, res, next) => {
-    const { email, password } = req.body;
+  constructor(req: Request, res: Response, next: NextFunction) {
+    this.req = req;
+    this.res = res;
+    this.next = next;
+    this.service = new LoginService();
+  }
 
-    if (!email || !password) {
-      return res
-        .status(400).json({ message: 'All fields must be filled' });
-    }
+  auth = async () => {
+    const { roleUser } = this.req.body;
 
-    const response = await this.serviceLogin.login({ email, password });
+    const { role } = await this.service.authUser(roleUser);
 
-    if (!isValidEmail(email) || response.isError) {
-      return res
-        .status(401).json({ message: 'Incorrect email or password' });
-    }
-
-    req.body.token = response.token;
-    return next();
+    return this.res.status(200).json({ role });
   };
 
-  validadeAuth: RequestHandler = async (req, res, next) => {
-    const { authorization } = req.headers;
-
-    if (!authorization) {
-      return res
-        .status(400).json({ message: 'Token not found' });
-    }
-
-    const decodeToken = JWT.decodeToken(authorization);
-
-    req.body.roleUser = decodeToken;
-
-    next();
-  };
-
-  auth: RequestHandler = async (req, res) => {
-    const { roleUser } = req.body;
-
-    const { role } = await this.serviceLogin.authUser(roleUser);
-
-    return res.status(200).json({ role });
-  };
-
-  login: RequestHandler = async (req, res) => {
-    const { token } = req.body;
-    return res.status(200).json({ token });
+  login = async () => {
+    const { token } = this.req.body;
+    return this.res.status(200).json({ token });
   };
 }

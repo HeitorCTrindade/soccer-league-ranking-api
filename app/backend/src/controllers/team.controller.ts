@@ -1,20 +1,30 @@
-import { RequestHandler } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import TeamService from '../services/team.service';
 
-export default class LoginController {
-  constructor(private teamsLogin = new TeamService()) {}
+export default class TeamController {
+  private req: Request;
+  private res: Response;
+  private next: NextFunction;
+  private service: TeamService;
 
-  getAllTeams: RequestHandler = async (_req, res) => {
-    const teams = await this.teamsLogin.getAllTeams();
+  constructor(req: Request, res: Response, next: NextFunction) {
+    this.req = req;
+    this.res = res;
+    this.next = next;
+    this.service = new TeamService();
+  }
 
-    return res.status(200).json(teams);
+  getAllTeams = async () => {
+    const teams = await this.service.getAllTeams();
+
+    return this.res.status(200).json(teams);
   };
 
-  getTeamById: RequestHandler = async (req, res) => {
-    const { id } = req.params;
+  getTeamById = async () => {
+    const { id } = this.req.params;
 
-    const team = await this.teamsLogin.getTeamById(+id);
+    const team = await this.service.getTeamById(+id);
 
-    return res.status(200).json(team);
+    return this.res.status(200).json(team);
   };
 }
