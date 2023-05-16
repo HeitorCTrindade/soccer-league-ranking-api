@@ -5,7 +5,7 @@ import chaiHttp = require('chai-http');
 import { allTeamsMock, teamMock } from './mocks/team.mock';
 
 import TeamsModel from '../database/models/Teams';
-import TeamInterface from '../interfaces/Team';
+import TeamInterface from '../interfaces/ITeam';
 
 import { Response } from 'superagent';
 
